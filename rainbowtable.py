@@ -5,7 +5,7 @@ import logging
 import pickle
 import itertools
 import sys
-from constants import CHARSETS_SECTION, MAIN_CONFIG_FILE
+from constants import CHARSETS_SECTION, GENERAL_SECTION, MAIN_CONFIG_FILE
 from algorithm import Algorithm
 
 class RainbowTable:
@@ -39,7 +39,7 @@ class RainbowTable:
         self.config.read(MAIN_CONFIG_FILE)
 
     def __init__(self, algorithm, charset, min_length, max_length,
-                 chain_length, number_of_chains, verbose, debug):
+                 chain_length, number_of_chains, rainbow_table_file, verbose, debug):
         """RainbowTable constructor
 
         Arguments:
@@ -49,6 +49,7 @@ class RainbowTable:
                 max_length {int} -- maximum password length
                 chain_length {int} -- chain length
                 number_of_chains {int} -- number of chains
+                rainbow_tablet_file {string} -- name of rainbow_table file
                 verbose {boolean} -- verbose mode
                 debug {boolean} -- debug mode
 
@@ -64,6 +65,7 @@ class RainbowTable:
         logging.debug(f"max_length = {max_length}")
         logging.debug(f"chain_length = {chain_length}")
         logging.debug(f"number_of_chanins = {number_of_chains}")
+        logging.debug(f"rainbow_table_file = {rainbow_table_file}")
         logging.debug(f"verbose = {verbose}")
         logging.debug(f"debug = {debug}")
 
@@ -83,17 +85,31 @@ class RainbowTable:
         else:
             raise ValueError("Algorithm not supported")
 
+        loglevel  = self.config[GENERAL_SECTION]["loglevel"]
+        logfile   = self.config[GENERAL_SECTION]["logfile"]
+        logging.debug(f"loglevel = {loglevel}")
+        logging.debug(f"logfile = {logfile}")
+
         # load charset
         if(self.config is not None and charset not in self.config[CHARSETS_SECTION]):
             raise ValueError(
                 "Charset not supported. For custom charset, edit the file config/config.ini"
             )
+
         self.charset = self.config[CHARSETS_SECTION][charset]
+
+        if(charset == "dictionary"):
+            self.charset = "dictionary"
+            self.dictfile = self.config[GENERAL_SECTION]["dictfile"]
+            logging.debug(f"self.dictfile = {self.dictfile}")
 
         self.min_length = min_length
         self.max_length = max_length
         self.chain_length = chain_length
         self.number_of_chains = number_of_chains
+        self.rainbow_table_file = rainbow_table_file
+        self.logfile = logfile
+        self.loglevel = loglevel
         self.verbose = verbose
         self.debug = debug
 
@@ -171,19 +187,46 @@ class RainbowTable:
     def generate_table(self):
         '''generates the full table
         '''
+
         collisions = 0
         self.table = {}
-        for _ in range(self.number_of_chains):
-            # generates a random password of allowed length
-            randomPassword = ''.join(random.choices(
-                self.charset,
-                k = random.randint(self.min_length, self.max_length))
-            )
 
-            chainTail = self.generate_chain(randomPassword)
-            if(chainTail in self.table):
-                collisions += 1
-            self.table[chainTail] = randomPassword
+        count = 1
+
+        if(self.charset != "dictionary"):
+
+            for _ in range(self.number_of_chains):
+                logging.debug(f"generating chain: {count}")
+                count+=1
+
+                # generates a random password of allowed length
+                randomPassword = ''.join(random.choices(
+                    self.charset,
+                    k = random.randint(self.min_length, self.max_length))
+                )
+
+                chainTail = self.generate_chain(randomPassword)
+                if(chainTail in self.table):
+                    collisions += 1
+
+                self.table[chainTail] = randomPassword
+
+        else:
+
+            f = open(self.dictfile, 'r', encoding="utf8", errors='ignore')
+
+            for word in f:
+                logging.debug(f"generating chain: {count}")
+                logging.debug("word = " + word)
+
+                chainTail = self.generate_chain(word)
+                if(chainTail in self.table):
+                    collisions += 1
+
+                self.table[chainTail] = word
+
+                count+=1
+
         logging.debug("collisions detected: " + str(collisions))
 
 
@@ -191,7 +234,7 @@ class RainbowTable:
         '''writes this object on a file
         
         Arguments:
-            filename {string} -- output file path
+            filename {string} -- rainbow table file path
         
         Returns:
             bool -- true if success
@@ -225,7 +268,7 @@ class RainbowTable:
         return objectLoaded
 
 
-    def lookup(self, hash_to_crack, verbose, debug):
+    def lookup(self, hash_to_crack, debug):
         '''looks for a cracked hash
         
         Arguments:
@@ -235,6 +278,7 @@ class RainbowTable:
             the plaintext if found, None otherwise
         '''
 
+        logging.debug(hash_to_crack)
         self.load_config(debug)
 
         hash_to_crack = bytes.fromhex(hash_to_crack)
