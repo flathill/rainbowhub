@@ -56,7 +56,7 @@ usage: python3 rainbowgen.py [-h] [-a ALGORITHM] [-c CHARSET] [-D DICTIONARY_FIL
 - ```CHARSET_NAME```: name of the charset used to generate random plaintext (available charsets are defined in config/config.ini) (default: dict)
 - ```DICTIONARY_FILE```: path od dictiname file name (default:dict/sample.txt)
 - ```MIN_LENGTH```: range for random plaintext length (default: 6)
-  ```MAX_LENGTH```: range for random plaintext length (default: 8)
+- ```MAX_LENGTH```: range for random plaintext length (default: 8)
 - ```CHAIN_LENGTH```: number of *hash/reduce* iterations for each chain (default: 2)
 - ```NUMBER_OF_CHAINS```: number of tuples *head_plaintext/tail_hash* that will be generated (default: 2)
 - ```RAINBOW_TABLE_FILE```: path of rainbow table fileoutput file (conventionally with extension *.rt*) (default:result.rt)
