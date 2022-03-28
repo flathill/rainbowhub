@@ -38,13 +38,14 @@ class RainbowTable:
         self.config = configparser.ConfigParser()
         self.config.read(MAIN_CONFIG_FILE)
 
-    def __init__(self, algorithm, charset, min_length, max_length,
+    def __init__(self, algorithm, charset, dictionary_file, min_length, max_length,
                  chain_length, number_of_chains, rainbow_table_file, verbose, debug):
         """RainbowTable constructor
 
         Arguments:
                 algorithm {string} -- name of hash algorithm used
                 charset {string} -- name of charset
+                dictionary_file {string} - name of dictionary file
                 min_length {int} -- minimum passwords length
                 max_length {int} -- maximum password length
                 chain_length {int} -- chain length
@@ -61,6 +62,7 @@ class RainbowTable:
 
         logging.debug(f"algorithm = {algorithm}")
         logging.debug(f"charset = {charset}")
+        logging.debug(f"dictionary_file = {dictionary_file}")
         logging.debug(f"min_length = {min_length}")
         logging.debug(f"max_length = {max_length}")
         logging.debug(f"chain_length = {chain_length}")
@@ -95,9 +97,10 @@ class RainbowTable:
 
         if(charset == "dict"):
             self.charset = "dict"
-            self.dictfile = self.config[GENERAL_SECTION]["dictfile"]
-            logging.debug(f"self.dictfile = {self.dictfile}")
+            self.dictionary_file = self.config[GENERAL_SECTION]["dictfile"]
+            logging.debug(f"self.dictionary_file = {self.dictionary_file}")
 
+        self.dictionary_file = dictionary_file
         self.min_length = min_length
         self.max_length = max_length
         self.chain_length = chain_length
@@ -206,7 +209,7 @@ class RainbowTable:
 
         else:
 
-            f = open(self.dictfile, 'r', encoding="utf8", errors='ignore')
+            f = open(self.dictionary_file, 'r', encoding="utf8", errors='ignore')
 
             for word in f:
                 logging.debug(f"generating chain: {count}")

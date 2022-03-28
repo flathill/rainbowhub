@@ -9,6 +9,7 @@ try:
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--algorithm', default = 'sha256', help="md5 or sha1 or sha224 or sha256 or sha384 or sha512")
     parser.add_argument('-c', '--charset', default = 'dict',     help="charset must be included in config.ini")
+    parser.add_argument('-D', '--dictionary_file', default = 'dict/sample.txt', help="name of dictionary file")
     parser.add_argument('-m', '--min_length', default = 6,       help="minimum length of passwords",type=int)
     parser.add_argument('-M', '--max_length', default = 8,       help="maximum length of passwords",type=int)
     parser.add_argument('-l', '--chain_length', default = 2,     help="length of each chain",type=int)
@@ -18,7 +19,7 @@ try:
     parser.add_argument('-v', '--verbose', action='store_true')
     args = parser.parse_args()
 
-    rt = RainbowTable(args.algorithm, args.charset, args.min_length, args.max_length, args.chain_length, args.number_of_chains, args.rainbow_table_file, args.verbose, args.debug)
+    rt = RainbowTable(args.algorithm, args.charset, args.dictionary_file, args.min_length, args.max_length, args.chain_length, args.number_of_chains, args.rainbow_table_file, args.verbose, args.debug)
     rt.generate_table()
     rt.save_to_file(args.rainbow_table_file)
 
