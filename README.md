@@ -69,7 +69,7 @@ usage: python3 rainbowcrack.py [-h] [-r RAINBOW_TABLE_FILE] [-d] [-v] hash_strin
 - ```hash_string```: string containing the hash to crack
 - ```RAINBOW_TABLE_FILE```: file containing the generated rainbow table (conventionally with extension *.rt*)
 
-Example:
+Example:  
 To generate a new table with default option
 ```
 python3 rainbowgen.py
