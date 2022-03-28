@@ -45,7 +45,7 @@ All the charset available with their respective names are written in ```config/c
 If you want to add a custom one, just add it at the end of the file.
 
 ### Run
-To generate a new table
+To generate a new rainbow table:
 
 ```
 usage: python3 rainbowgen.py [-h] [-a ALGORITHM] [-c CHARSET] [-D DICTIONARY_FILE] [-m MIN_LENGTH] [-M MAX_LENGTH]
