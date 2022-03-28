@@ -33,7 +33,9 @@ While developing, I found myself dealing with various challenges, that gave me a
 
 ## Key features
   - Custom rainbow table generator
-  - SHA1 and MD5 support
+    - support charset (lower_alphanumeric, alphanumeria, ascii, numeric, dict)
+      - dict: specify original dictionary file
+    - support algorithm (MD5, SHA1, SHA224, SHA256, SHA384, SHA512)
   - Table serialization
   
 ------
@@ -46,26 +48,41 @@ If you want to add a custom one, just add it at the end of the file.
 To generate a new table
 
 ```
-python3 rainbowgen.py algorithm_name charset_name min_password_length max_massword_length chain_length n_chains output_file
+usage: python3 rainbowgen.py [-h] [-a ALGORITHM] [-c CHARSET] [-D DICTIONARY_FILE] [-m MIN_LENGTH] [-M MAX_LENGTH]
+                     [-l CHAIN_LENGTH] [-n NUMBER_OF_CHAINS] [-r RAINBOW_TABLE_FILE] [-d] [-v]
+
 ```
-- ```algorithm_name```: name of the hashing algorithm (currently SHA1 and MD5 are available)
-- ```charset_name```: name of the charset used to generate random plaintext (available charsets are defined in settings.py)
-- ```min_password_length```
-  ```max_password_length```: range for random plaintext length
-- ```chain_length```: number of *hash/reduce* iterations for each chain
-- ```n_chains```: number of tuples *head_plaintext/tail_hash* that will be generated
-- ```output_file```: path of output file (conventionally with extension *.rt*)
+- ```ALGORITHM```: name of the hashing algorithm (currently SHA1 and MD5 are available) (default: sha1)
+- ```CHARSET_NAME```: name of the charset used to generate random plaintext (available charsets are defined in config/config.ini) (default: dict)
+- ```DICTIONARY_FILE```: path od dictiname file name (default:dict/sample.txt)
+- ```MIN_LENGTH```: range for random plaintext length (default: 6)
+  ```MAX_LENGTH```: range for random plaintext length (default: 8)
+- ```CHAIN_LENGTH```: number of *hash/reduce* iterations for each chain (default: 2)
+- ```NUMBER_OF_CHAINS```: number of tuples *head_plaintext/tail_hash* that will be generated (default: 2)
+- ```RAINBOW_TABLE_FILE```: path of rainbow table fileoutput file (conventionally with extension *.rt*) (default:result.rt)
 
 To try cracking a hash:
 
 ```
-python3 rainbowcrack.py hash_string table_file
+usage: python3 rainbowcrack.py [-h] [-r RAINBOW_TABLE_FILE] [-d] [-v] hash_string
 ```
 - ```hash_string```: string containing the hash to crack
-- ```table_file```: file containing the generated rainbow table (conventionally with extension *.rt*)
+- ```RAINBOW_TABLE_FILE```: file containing the generated rainbow table (conventionally with extension *.rt*)
 
 Example:
+To generate a new table with default option
 ```
-python3 rainbowgen.py sha1 alphanumeric 1 6 20 1000 test_table.rt
-python3 rainbowcrack.py "1e4e888ac66f8dd41e00c5a7ac36a32a9950d271" test_table.rt
+python3 rainbowgen.py
+```
+To generate a new table with dictionary mode
+```
+python3 rainbowgen.py --charset dict --dictionary_file dict/original.txt
+```
+To generate a new table with charset ascii
+```
+python3 rainbowgen.py --charset ascii --min_length 8 --max_length 12 --chain_length 10 --number_of_chains 10
+```
+To try crack a hash
+```
+python3 rainbowcrack 948134107bce4ae2d990bb08466c6d9eede4146bc13d255d4760509b28fe722d
 ```
