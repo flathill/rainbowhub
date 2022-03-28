@@ -85,11 +85,6 @@ class RainbowTable:
         else:
             raise ValueError("Algorithm not supported")
 
-        loglevel  = self.config[GENERAL_SECTION]["loglevel"]
-        logfile   = self.config[GENERAL_SECTION]["logfile"]
-        logging.debug(f"loglevel = {loglevel}")
-        logging.debug(f"logfile = {logfile}")
-
         # load charset
         if(self.config is not None and charset not in self.config[CHARSETS_SECTION]):
             raise ValueError(
@@ -98,8 +93,8 @@ class RainbowTable:
 
         self.charset = self.config[CHARSETS_SECTION][charset]
 
-        if(charset == "dictionary"):
-            self.charset = "dictionary"
+        if(charset == "dict"):
+            self.charset = "dict"
             self.dictfile = self.config[GENERAL_SECTION]["dictfile"]
             logging.debug(f"self.dictfile = {self.dictfile}")
 
@@ -108,8 +103,6 @@ class RainbowTable:
         self.chain_length = chain_length
         self.number_of_chains = number_of_chains
         self.rainbow_table_file = rainbow_table_file
-        self.logfile = logfile
-        self.loglevel = loglevel
         self.verbose = verbose
         self.debug = debug
 
@@ -193,7 +186,7 @@ class RainbowTable:
 
         count = 1
 
-        if(self.charset != "dictionary"):
+        if(self.charset != "dict"):
 
             for _ in range(self.number_of_chains):
                 logging.debug(f"generating chain: {count}")
