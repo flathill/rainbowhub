@@ -25,7 +25,7 @@ While developing, I found myself dealing with various challenges, that gave me a
   2. How to master and combine common **data structures** to build an efficient solution (lists, dictionaries, ...)
   3. Python API and modules such as
      * _argparse_ -- to easily handle arguments for my scripts
-     * _hashing_ -- to use SHA1 and MD5 hash functions
+     * _hashing_ -- to use MD5 and SHA1 and SHA224 and SHA256 and SHA384 and SHA512 hash functions
      * _pickle_ -- to store in a file the generated table, and restore it for cracking
      * _itertools_ -- to generate random passwords to start chains with
   4. Python **Unit Tests** run with _pytest_ module
